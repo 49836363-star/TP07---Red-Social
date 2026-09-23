@@ -1,0 +1,35 @@
+@model TP07.Models.Publicacion
+@{
+    ViewData["Title"] = "Crear publicación";
+}
+
+<h2>Crear publicación</h2>
+
+@if (ViewBag.Error != null)
+{
+    <div class="alert alert-danger">@ViewBag.Error</div>
+}
+
+@if (ViewBag.Mensaje != null)
+{
+    <div class="alert alert-success">@ViewBag.Mensaje</div>
+}
+
+<form asp-action="CrearPublicacion" method="post">
+    <div class="mb-3">
+        <label for="titulo" class="form-label">Título</label>
+        <input asp-for="titulo" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label for="descripcion" class="form-label">Descripción</label>
+        <textarea asp-for="descripcion" class="form-control" rows="4"></textarea>
+    </div>
+
+    <div class="mb-3">
+        <label for="imagen" class="form-label">Imagen</label>
+        <input asp-for="imagen" class="form-control" placeholder="URL de la imagen" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Publicar</button>
+</form>

@@ -31,13 +31,55 @@ public class HomeController : Controller
         if (usuario != null)
         {
             HttpContext.Session.SetString("nombreUsuario", usuario.nombreUsuario);
-            return RedirectToAction("CrearPublicacion");
+            return RedirectToAction("RedSocial");
         }
         else
         {
             ViewBag.Error = "El usuario o la contraseña son incorrectos.";
             return View("Index");
         }
+    }
+
+    public IActionResult Registro()
+    {
+        return View();
+    }
+
+    [HttpPost]
+    public IActionResult Registro(Usuario usuario)
+    {
+        if (usuario == null)
+        {
+            ViewBag.Error = "Datos inválidos.";
+            return View();
+        }
+
+        if (BD.ExisteUsuario(usuario.nombreUsuario))
+        {
+            ViewBag.Error = "El nombre de usuario ya está en uso.";
+            return View(usuario);
+        }
+
+        BD.RegistrarUsuario(usuario);
+
+        return RedirectToAction("Login");
+    }
+
+    public IActionResult RedSocial()
+    {
+        string nombreUsuario = HttpContext.Session.GetString("nombreUsuario");
+
+        if (string.IsNullOrEmpty(nombreUsuario))
+        {
+            return RedirectToAction("Index");
+        }
+
+        Usuario usuarioActual = BD.ObtenerUsuario(nombreUsuario);
+        ViewBag.usuarioActual = usuarioActual;
+        ViewBag.nombreUsuario = nombreUsuario;
+
+        List<Publicacion> publicaciones = BD.ObtenerPublicacionesRecientes(10);
+        return View(publicaciones);
     }
 
     public IActionResult CrearPublicacion()
@@ -91,6 +133,54 @@ public class HomeController : Controller
     {
         HttpContext.Session.Clear();
         return RedirectToAction("Index");
+    }
+
+    [HttpPost]
+    public IActionResult AgregarComentario(int idPublicacion, string texto)
+    {
+        string nombreUsuario = HttpContext.Session.GetString("nombreUsuario");
+
+        if (string.IsNullOrEmpty(nombreUsuario) || string.IsNullOrWhiteSpace(texto))
+        {
+            return RedirectToAction("RedSocial");
+        }
+
+        Usuario usuario = BD.ObtenerUsuario(nombreUsuario);
+        if (usuario == null)
+        {
+            return RedirectToAction("Index");
+        }
+
+        BD.AgregarComentario(idPublicacion, usuario.Id, texto);
+        return RedirectToAction("RedSocial");
+    }
+
+    [HttpPost]
+    public IActionResult AgregarLike(int idPublicacion)
+    {
+        string nombreUsuario = HttpContext.Session.GetString("nombreUsuario");
+
+        if (string.IsNullOrEmpty(nombreUsuario))
+        {
+            return RedirectToAction("Index");
+        }
+
+        Usuario usuario = BD.ObtenerUsuario(nombreUsuario);
+        if (usuario == null)
+        {
+            return RedirectToAction("Index");
+        }
+
+        if (BD.VerificarLike(idPublicacion, usuario.Id))
+        {
+            BD.RemoverLike(idPublicacion, usuario.Id);
+        }
+        else
+        {
+            BD.AgregarLike(idPublicacion, usuario.Id);
+        }
+
+        return RedirectToAction("RedSocial");
     }
 
     public IActionResult Privacy()

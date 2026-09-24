@@ -50,13 +50,17 @@
         "net9.0": {
           "targetAlias": "net9.0",
           "dependencies": {
+            "Dapper": {
+              "target": "Package",
+              "version": "[2.1.89, )"
+            },
+            "Microsoft.AspNetCore.Session": {
+              "target": "Package",
+              "version": "[2.3.13, )"
+            },
             "Microsoft.Data.SqlClient": {
               "target": "Package",
               "version": "[7.1.0, )"
-            },
-            "dapper": {
-              "target": "Package",
-              "version": "[2.1.89, )"
             }
           },
           "imports": [

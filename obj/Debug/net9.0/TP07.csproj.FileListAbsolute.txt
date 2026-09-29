@@ -67,9 +67,7 @@ Z:\4°\programacion\TP07\obj\Debug\net9.0\rjsmcshtml.dswa.cache.json
 Z:\4°\programacion\TP07\obj\Debug\net9.0\scopedcss\Views\Shared\_Layout.cshtml.rz.scp.css
 Z:\4°\programacion\TP07\obj\Debug\net9.0\scopedcss\bundle\TP07.styles.css
 Z:\4°\programacion\TP07\obj\Debug\net9.0\scopedcss\projectbundle\TP07.bundle.scp.css
-Z:\4°\programacion\TP07\obj\Debug\net9.0\compressed\3dncjakdui-b9sayid5wm.gz
 Z:\4°\programacion\TP07\obj\Debug\net9.0\compressed\m3vjj0yzwb-61n19gt1b8.gz
-Z:\4°\programacion\TP07\obj\Debug\net9.0\compressed\ccgpspk56t-xtxxf3hu2r.gz
 Z:\4°\programacion\TP07\obj\Debug\net9.0\compressed\gkwg4y5tck-bqjiyaj88i.gz
 Z:\4°\programacion\TP07\obj\Debug\net9.0\compressed\uf3ipwm5nr-c2jlpeoesf.gz
 Z:\4°\programacion\TP07\obj\Debug\net9.0\compressed\trgf5n9dy5-erw9l3u2r3.gz
@@ -141,3 +139,5 @@ Z:\4°\programacion\TP07\obj\Debug\net9.0\refint\TP07.dll
 Z:\4°\programacion\TP07\obj\Debug\net9.0\TP07.pdb
 Z:\4°\programacion\TP07\obj\Debug\net9.0\TP07.genruntimeconfig.cache
 Z:\4°\programacion\TP07\obj\Debug\net9.0\ref\TP07.dll
+Z:\4°\programacion\TP07\obj\Debug\net9.0\compressed\3dncjakdui-dg9jljua99.gz
+Z:\4°\programacion\TP07\obj\Debug\net9.0\compressed\ccgpspk56t-ng3cb8zbht.gz

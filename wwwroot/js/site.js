@@ -69,3 +69,115 @@ function validarFormulario() {
     return true;
 }
 
+// Red Social - Funciones para Likes y Comentarios
+function toggleComments(publicacionId) {
+    const commentsSection = document.getElementById('comments-' + publicacionId);
+    if (commentsSection.style.display === 'none') {
+        commentsSection.style.display = 'block';
+    } else {
+        commentsSection.style.display = 'none';
+    }
+}
+
+function toggleLike(publicacionId) {
+    const btn = document.getElementById('like-btn-' + publicacionId);
+    const likesCountSpan = document.getElementById('likes-count-' + publicacionId);
+
+    const formData = new FormData();
+    formData.append('idPublicacion', publicacionId);
+
+    fetch(urlAgregarLike, {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => {
+        console.log('Response status:', response.status);
+        return response.json();
+    })
+    .then(data => {
+        console.log('Response data:', data);
+        if (data.success) {
+            // Actualizar el botón
+            if (data.yaLike) {
+                btn.classList.add('liked');
+                btn.textContent = '❤️ Me Encanta';
+            } else {
+                btn.classList.remove('liked');
+                btn.textContent = '🤍 Me Gusta';
+            }
+
+            // Actualizar la cantidad de likes
+            const likeWord = data.cantidadLikes !== 1 ? 's' : '';
+            likesCountSpan.textContent = `❤️ ${data.cantidadLikes} Me Gusta${likeWord}`;
+        } else {
+            console.error('Error:', data.message);
+        }
+    })
+    .catch(error => console.error('Error:', error));
+}
+
+function agregarComentario(event, publicacionId) {
+    event.preventDefault();
+
+    const textInput = document.getElementById('comment-input-' + publicacionId);
+    const texto = textInput.value.trim();
+
+    if (!texto) {
+        alert('El comentario no puede estar vacío');
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append('idPublicacion', publicacionId);
+    formData.append('texto', texto);
+
+    fetch(urlAgregarComentario, {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Comentario response:', data);
+        if (data.success) {
+            const comentarioHTML = `
+                <div class="comment">
+                    <div class="comment-header">
+                        <strong>${data.comentario.nombre} ${data.comentario.apellido}</strong>
+                        <small>@${data.comentario.nombreUsuario}</small>
+                    </div>
+                    <p class="comment-text">${data.comentario.texto}</p>
+                    <small class="comment-date">${formatearFecha(data.comentario.fechaComentario)}</small>
+                </div>
+            `;
+
+            const commentsList = document.getElementById('comments-list-' + publicacionId);
+            commentsList.insertAdjacentHTML('beforeend', comentarioHTML);
+            textInput.value = '';
+            actualizarContadorComentarios(publicacionId);
+        } else {
+            alert(data.message || 'Error al agregar el comentario');
+        }
+    })
+    .catch(error => {
+        console.error('Error en comentario:', error);
+        alert('Error al agregar el comentario');
+    });
+}
+
+function formatearFecha(fechaStr) {
+    // Entrada: "09/20/2026 17:30:00"
+    // Salida: "20/09/2026 17:30"
+    const [fecha, hora] = fechaStr.split(' ');
+    const [mes, dia, año] = fecha.split('/');
+    const [horas, minutos] = hora.split(':');
+    return `${dia}/${mes}/${año} ${horas}:${minutos}`;
+}
+
+function actualizarContadorComentarios(publicacionId) {
+    const commentsList = document.getElementById('comments-list-' + publicacionId);
+    const comentarios = commentsList.querySelectorAll('.comment').length;
+    const commentsCountSpan = document.getElementById('comments-count-' + publicacionId);
+    const comentarioWord = comentarios !== 1 ? 's' : '';
+    commentsCountSpan.textContent = `💬 ${comentarios} Comentario${comentarioWord}`;
+}
+

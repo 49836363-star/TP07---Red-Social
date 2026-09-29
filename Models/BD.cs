@@ -135,3 +135,4 @@ public class BD
             connection.Execute(query, new { idPublicacion, idUsuario });
         }
     }
+}

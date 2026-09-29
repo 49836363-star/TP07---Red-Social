@@ -142,17 +142,32 @@ public class HomeController : Controller
 
         if (string.IsNullOrEmpty(nombreUsuario) || string.IsNullOrWhiteSpace(texto))
         {
-            return RedirectToAction("RedSocial");
+            return Json(new { success = false, message = "Datos inválidos" });
         }
 
         Usuario usuario = BD.ObtenerUsuario(nombreUsuario);
         if (usuario == null)
         {
-            return RedirectToAction("Index");
+            return Json(new { success = false, message = "Usuario no autenticado" });
         }
 
         BD.AgregarComentario(idPublicacion, usuario.Id, texto);
-        return RedirectToAction("RedSocial");
+        
+        var usuarioComentario = BD.ObtenerUsuarioPorId(usuario.Id);
+        var fechaActual = DateTime.Now.ToString("MM/dd/yyyy HH:mm:ss");
+        
+        return Json(new 
+        { 
+            success = true, 
+            comentario = new 
+            {
+                nombreUsuario = usuarioComentario.nombreUsuario,
+                nombre = usuarioComentario.nombre,
+                apellido = usuarioComentario.apellido,
+                texto = texto,
+                fechaComentario = fechaActual
+            }
+        });
     }
 
     [HttpPost]
@@ -162,16 +177,18 @@ public class HomeController : Controller
 
         if (string.IsNullOrEmpty(nombreUsuario))
         {
-            return RedirectToAction("Index");
+            return Json(new { success = false, message = "Usuario no autenticado" });
         }
 
         Usuario usuario = BD.ObtenerUsuario(nombreUsuario);
         if (usuario == null)
         {
-            return RedirectToAction("Index");
+            return Json(new { success = false, message = "Usuario no encontrado" });
         }
 
-        if (BD.VerificarLike(idPublicacion, usuario.Id))
+        bool yaLike = BD.VerificarLike(idPublicacion, usuario.Id);
+        
+        if (yaLike)
         {
             BD.RemoverLike(idPublicacion, usuario.Id);
         }
@@ -180,7 +197,15 @@ public class HomeController : Controller
             BD.AgregarLike(idPublicacion, usuario.Id);
         }
 
-        return RedirectToAction("RedSocial");
+        int cantidadLikes = BD.ObtenerCantidadLikes(idPublicacion);
+        bool nuevoEstado = !yaLike;
+
+        return Json(new 
+        { 
+            success = true, 
+            yaLike = nuevoEstado,
+            cantidadLikes = cantidadLikes
+        });
     }
 
     public IActionResult Privacy()

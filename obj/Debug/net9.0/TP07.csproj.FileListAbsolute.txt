@@ -140,4 +140,4 @@ Z:\4°\programacion\TP07\obj\Debug\net9.0\TP07.pdb
 Z:\4°\programacion\TP07\obj\Debug\net9.0\TP07.genruntimeconfig.cache
 Z:\4°\programacion\TP07\obj\Debug\net9.0\ref\TP07.dll
 Z:\4°\programacion\TP07\obj\Debug\net9.0\compressed\3dncjakdui-dg9jljua99.gz
-Z:\4°\programacion\TP07\obj\Debug\net9.0\compressed\ccgpspk56t-ng3cb8zbht.gz
+Z:\4°\programacion\TP07\obj\Debug\net9.0\compressed\ccgpspk56t-1tsdmsdqnf.gz

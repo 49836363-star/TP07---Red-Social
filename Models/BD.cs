@@ -135,4 +135,16 @@ public class BD
             connection.Execute(query, new { idPublicacion, idUsuario });
         }
     }
+
+    public static List<Publicacion> ObtenerPublicacionesPaginadas(int idUltima)
+    {
+        using (SqlConnection connection = new SqlConnection(connectionString))
+        {
+            string query = @"SELECT TOP 10 * FROM Publicaciones 
+                            WHERE Id < @idUltima 
+                            ORDER BY Id DESC";
+
+            return connection.Query<Publicacion>(query, new { idUltima = idUltima }).ToList();
+        }
+    }
 }

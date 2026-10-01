@@ -1,13 +1,8 @@
 @model List<TP07.Models.Publicacion>
 @{
     ViewData["Title"] = "Red Social";
+    int ultimaId = 0;
 }
-
-<!-- Definir URLs para JavaScript -->
-<script>
-    const urlAgregarLike = '@Url.Action("AgregarLike", "Home")';
-    const urlAgregarComentario = '@Url.Action("AgregarComentario", "Home")';
-</script>
 
 <div class="social-feed-container">
     <!-- Header -->
@@ -34,6 +29,9 @@
         {
             @foreach (var pub in Model)
             {
+                // Guardamos el ID de la publicación en cada vuelta
+                ultimaId = pub.Id;
+
                 var usuario = BD.ObtenerUsuarioPorId(pub.IdUsuario);
                 var comentarios = BD.ObtenerComentarios(pub.Id);
                 var cantidadLikes = BD.ObtenerCantidadLikes(pub.Id);
@@ -119,6 +117,21 @@
                     </div>
                 </div>
             }
+
+            <!-- Botón Ver más (Aparece una sola vez al final del listado) -->
+            <div style="text-align: center; margin: 20px 0;">
+                <button id="btnVerMas" class="btn-create" onclick="cargarMasPublicaciones()">Ver más</button>
+            </div>
         }
     </div>
 </div>
+
+<!-- Definir URLs y variables para JavaScript (Al final para capturar el valor de ultimaId) -->
+<script>
+    const urlAgregarLike = '@Url.Action("AgregarLike", "Home")';
+    const urlAgregarComentario = '@Url.Action("AgregarComentario", "Home")';
+    const urlObtenerMas = '@Url.Action("ObtenerMas", "Home")';
+
+    // Captura el último ID procesado en el foreach
+    let idUltima = @ultimaId;
+</script>

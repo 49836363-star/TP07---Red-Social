@@ -285,6 +285,39 @@ public class HomeController : Controller
     {
         return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
     }
+
+    public IActionResult ObtenerMas(int idUltima)
+    {
+        string nombreUsuario = HttpContext.Session.GetString("nombreUsuario");
+        Usuario usuarioActual = BD.ObtenerUsuario(nombreUsuario);
+
+        List<Publicacion> publicaciones = BD.ObtenerPublicacionesPaginadas(idUltima);
+        List<object> listaResultados = new List<object>();
+
+        foreach (Publicacion pub in publicaciones)
+        {
+            Usuario usuario = BD.ObtenerUsuarioPorId(pub.IdUsuario);
+            List<Comentario> comentarios = BD.ObtenerComentarios(pub.Id);
+            int cantidadLikes = BD.ObtenerCantidadLikes(pub.Id);
+            bool yaLike = BD.VerificarLike(pub.Id, usuarioActual.Id);
+
+            listaResultados.Add(new {
+                id = pub.Id,
+                titulo = pub.titulo,
+                descripcion = pub.descripcion,
+                imagen = pub.imagen,
+                fechaPublicacion = pub.fechaPublicacion,
+                nombreUsuario = usuario.nombreUsuario,
+                nombre = usuario.nombre,
+                apellido = usuario.apellido,
+                cantidadLikes = cantidadLikes,
+                yaLike = yaLike,
+                comentarios = comentarios
+            });
+        }
+
+        return Json(new { success = true, publicaciones = listaResultados });
+    }
 }
 
 

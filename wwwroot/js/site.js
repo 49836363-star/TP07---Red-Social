@@ -181,3 +181,99 @@ function actualizarContadorComentarios(publicacionId) {
     commentsCountSpan.textContent = `💬 ${comentarios} Comentario${comentarioWord}`;
 }
 
+function cargarMasPublicaciones() {
+    fetch(urlObtenerMas + '?idUltima=' + idUltima)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                if (data.publicaciones.length === 0) {
+                    document.getElementById('btnVerMas').style.display = 'none';
+                    return;
+                }
+
+                let feedContainer = document.querySelector('.feed-container');
+
+                data.publicaciones.forEach(pub => {
+                    let comentariosHTML = '';
+
+                    if (pub.comentarios) {
+                        pub.comentarios.forEach(c => {
+                            comentariosHTML += `
+                                <div class="comment">
+                                    <div class="comment-header">
+                                        <strong>${c.nombre} ${c.apellido}</strong>
+                                        <small>@${c.nombreUsuario}</small>
+                                    </div>
+                                    <p class="comment-text">${c.texto}</p>
+                                    <small class="comment-date">${c.fechaComentario}</small>
+                                </div>
+                            `;
+                        });
+                    }
+
+                    let imagenHTML = pub.imagen ? `<div class="pub-image"><img src="${pub.imagen}" /></div>` : '';
+                    let textoLike = pub.yaLike ? '❤️ Me Encanta' : '🤍 Me Gusta';
+                    let claseLike = pub.yaLike ? 'action-button liked' : 'action-button';
+
+                    let publicacionHTML = `
+                        <div class="publication-card">
+                            <div class="pub-header">
+                                <div class="pub-user-info">
+                                    <div class="user-avatar">${pub.nombreUsuario[0].toUpperCase()}</div>
+                                    <div class="user-details">
+                                        <strong>${pub.nombre} ${pub.apellido}</strong>
+                                        <small>@${pub.nombreUsuario}</small>
+                                        <small class="pub-date">${pub.fechaPublicacion}</small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            ${imagenHTML}
+
+                            <div class="pub-content">
+                                <h3>${pub.titulo}</h3>
+                                <p>${pub.descripcion}</p>
+                            </div>
+
+                            <div class="pub-stats">
+                                <span class="likes-count" id="likes-count-${pub.id}">❤️ ${pub.cantidadLikes} Me Gusta</span>
+                                <span class="comments-count" id="comments-count-${pub.id}">💬 ${pub.comentarios ? pub.comentarios.length : 0} Comentarios</span>
+                            </div>
+
+                            <div class="pub-actions">
+                                <button class="${claseLike}" id="like-btn-${pub.id}" onclick="toggleLike(${pub.id})" style="width: 50%;">
+                                    ${textoLike}
+                                </button>
+                                <button class="action-button" onclick="toggleComments(${pub.id})" style="width: 50%;">💬 Comentar</button>
+                            </div>
+
+                            <div class="comments-section" id="comments-${pub.id}" style="display: none;">
+                                <div class="comments-list" id="comments-list-${pub.id}">
+                                    ${comentariosHTML}
+                                </div>
+
+                                <form onsubmit="agregarComentario(event, ${pub.id})" class="comment-form">
+                                    <div class="comment-input-wrapper">
+                                        <input type="text" name="texto" id="comment-input-${pub.id}" placeholder="Escribe un comentario..." class="comment-input" required />
+                                        <button type="submit" class="comment-submit">➤</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    `;
+
+                    // Insertar el HTML sumándolo al contenedor
+                    feedContainer.innerHTML += publicacionHTML;
+
+                    // Actualizar la variable idUltima con el ID de esta publicación
+                    idUltima = pub.id;
+                });
+
+                // Si vienen menos de 10, es porque no hay más publicaciones
+                if (data.publicaciones.length < 10) {
+                    document.getElementById('btnVerMas').style.display = 'none';
+                }
+            }
+        })
+        .catch(error => console.error('Error:', error));
+}
